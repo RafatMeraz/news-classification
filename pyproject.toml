@@ -6,7 +6,16 @@ authors = [
     { name = "RafatMeraz", email = "razhossain201@gmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "dvc>=3.67.1",
+    "ipykernel>=7.4.0",
+    "mlflow>=3.18.0",
+    "nltk>=3.10.4",
+    "numpy>=2.5.4",
+    "pandas>=3.1.1",
+    "scikit-learn>=1.9.1",
+    "xgboost>=3.4.1",
+]
 
 [project.scripts]
 news-classification = "news_classification:main"
