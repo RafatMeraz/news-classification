@@ -5,7 +5,7 @@ import pandas as pd
 
 from pipeline.pipeline_utils import get_logger, load_config_params
 
-logger = get_logger(__name__)
+logger = get_logger("data_preprocessing")
 
 def load_data(data_path: str) -> pd.DataFrame:
     """

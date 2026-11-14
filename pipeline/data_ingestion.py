@@ -4,7 +4,7 @@ import boto3
 
 from pipeline.pipeline_utils import get_logger, load_config_params
 
-logger = get_logger(__name__)
+logger = get_logger("data ingestion")
 
 def load_data(bucket_name: str, download_folder: str):
     s3 = boto3.client('s3')

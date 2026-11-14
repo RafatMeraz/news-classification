@@ -12,3 +12,10 @@ stages:
       - pipeline/data_preprocessing.py
     outs:
       - data/processed
+  feature_engineering:
+    cmd: python -m pipeline.feature_engineering
+    deps:
+      - data/processed
+      - pipeline/feature_engineering.py
+    outs:
+      - data/encoded

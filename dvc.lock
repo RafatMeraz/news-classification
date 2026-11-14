@@ -31,3 +31,21 @@ stages:
       md5: c9467db5bd43c07ddfc15a9ed7e56d85.dir
       size: 2506884
       nfiles: 10
+  feature_engineering:
+    cmd: python -m pipeline.feature_engineering
+    deps:
+    - path: data/processed
+      hash: md5
+      md5: c9467db5bd43c07ddfc15a9ed7e56d85.dir
+      size: 2506884
+      nfiles: 10
+    - path: pipeline/feature_engineering.py
+      hash: md5
+      md5: 439bbc9af6201a9588270bdea2f715b2
+      size: 3370
+    outs:
+    - path: data/encoded
+      hash: md5
+      md5: 37f9a10c8be6b6e2adba39968ce45e34.dir
+      size: 17476650
+      nfiles: 10
