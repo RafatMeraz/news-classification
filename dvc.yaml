@@ -1,0 +1,7 @@
+stages:
+  data_ingestion:
+    cmd: python -m pipeline.data_ingestion
+    deps:
+      - pipeline/data_ingestion.py
+    outs:
+      - data/raw
