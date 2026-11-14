@@ -5,3 +5,10 @@ stages:
       - pipeline/data_ingestion.py
     outs:
       - data/raw
+  data_preprocessing:
+    cmd: python -m pipeline.data_preprocessing
+    deps:
+      - data/raw
+      - pipeline/data_preprocessing.py
+    outs:
+      - data/processed
