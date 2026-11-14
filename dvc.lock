@@ -1,0 +1,15 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python -m pipeline.data_ingestion
+    deps:
+    - path: pipeline/data_ingestion.py
+      hash: md5
+      md5: 669e64f8e7040ec7f0472c4d8595b504
+      size: 1465
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: bd160971df9d1d9d02356d8e56420ab2.dir
+      size: 2467974
+      nfiles: 10
