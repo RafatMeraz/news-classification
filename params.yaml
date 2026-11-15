@@ -1,5 +1,8 @@
 data_ingestion:
   bucket_name: practice-ops-data-lake
-
+model_train:
+  cv: 2
+  scoring: accuracy
+  n_jobs: -1
 utils:
   data_folder: data

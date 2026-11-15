@@ -5,6 +5,8 @@ stages:
       - pipeline/data_ingestion.py
     outs:
       - data/raw
+    params:
+      - data_ingestion.bucket_name
   data_preprocessing:
     cmd: python -m pipeline.data_preprocessing
     deps:
@@ -24,5 +26,9 @@ stages:
     deps:
       - data/encoded
       - pipeline/model_training.py
+    params:
+      - model_train.cv
+      - model_train.scoring
+      - model_train.n_jobs
     outs:
       - models/

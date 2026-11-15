@@ -7,6 +7,9 @@ stages:
       hash: md5
       md5: 2d0d119fa5ae7624b0efd3609a4aac69
       size: 1473
+    params:
+      params.yaml:
+        data_ingestion.bucket_name: practice-ops-data-lake
     outs:
     - path: data/raw
       hash: md5
@@ -59,8 +62,13 @@ stages:
       nfiles: 10
     - path: pipeline/model_training.py
       hash: md5
-      md5: 86a7291633f1aa28cf5a58b3213bdf41
-      size: 3617
+      md5: bc00fc236dbc3ff040f8aa844c9e6b3f
+      size: 3716
+    params:
+      params.yaml:
+        model_train.cv: 2
+        model_train.n_jobs: -1
+        model_train.scoring: accuracy
     outs:
     - path: models/
       hash: md5

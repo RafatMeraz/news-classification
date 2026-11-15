@@ -16,9 +16,9 @@ mlflow.set_experiment("news_classification")
 
 def load_data(data_folder: str) -> pd.DataFrame:
     """
-    Load data from folder and returns a combine Dataframe
-    :param data_folder: Data folder path
-    :return: Dataframe
+    Load all CSV files from folder and return a single combined DataFrame.
+    :param data_folder: Path to folder containing encoded CSV files
+    :return: Combined DataFrame
     """
     try:
         dataframes = []
@@ -41,6 +41,13 @@ def load_data(data_folder: str) -> pd.DataFrame:
 
 
 def save_model(model: SVC, models_folder: str, filename: str = "svc_model.pkl") -> str:
+    """
+    Serialize model to disk as a pickle file.
+    :param model: Trained SVC model
+    :param models_folder: Destination folder (created if missing)
+    :param filename: Output filename
+    :return: Full path to saved model file
+    """
     os.makedirs(models_folder, exist_ok=True)
     model_path = os.path.join(models_folder, filename)
     with open(model_path, "wb") as f:
@@ -49,10 +56,18 @@ def save_model(model: SVC, models_folder: str, filename: str = "svc_model.pkl") 
     return model_path
 
 
-def train_model(df: pd.DataFrame, target_col: str = "label") -> SVC:
+def train_model(df: pd.DataFrame, params: dict, target_col: str = "label") -> SVC:
+    """
+    Train SVC using GridSearchCV hyperparameter tuning and log results to MLflow.
+    :param df: Encoded DataFrame with tfidf_ feature columns and target column
+    :param params: Config params containing model_train settings (cv, scoring, n_jobs)
+    :param target_col: Name of the target label column
+    :return: Best SVC estimator found by GridSearchCV
+    """
     logger.info(f"DataFrame shape: {df.shape}")
     logger.info(f"Columns: {list(df.columns)}")
 
+    # All tfidf_ columns produced by feature engineering are used as features
     feature_cols = [col for col in df.columns if col.startswith("tfidf_")]
     logger.info(f"Feature cols found: {len(feature_cols)}")
 
@@ -65,25 +80,26 @@ def train_model(df: pd.DataFrame, target_col: str = "label") -> SVC:
     logger.info(f"DataFrame X shape: {X.shape}")
     logger.info(f"DataFrame Y shape: {y.shape}")
 
+    # stratify preserves class distribution across train/test splits
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=0.2, random_state=42, stratify=y
     )
 
     param_grid = {
-        "C": [0.1, 1, 10, 100],
-        "kernel": ["linear", "rbf"],
-        "gamma": ["scale", "auto"],
+        "C": [0.1, 1, 10, 100],       # regularization strength
+        "kernel": ["linear", "rbf"],   # linear for text features; rbf for non-linear boundaries
+        "gamma": ["scale", "auto"],    # only applies to rbf kernel
     }
 
     mlflow.sklearn.autolog(log_model_signatures=True, log_input_examples=True)
 
-    with mlflow.start_run() as run:
+    with mlflow.start_run():
         grid_search = GridSearchCV(
             SVC(),
             param_grid,
-            cv=2,
-            scoring="accuracy",
-            n_jobs=-1,
+            cv=params['model_train']['cv'],
+            scoring=params['model_train']['scoring'],
+            n_jobs=params['model_train']['n_jobs'],
             verbose=1,
         )
         grid_search.fit(X_train, y_train)
@@ -111,7 +127,7 @@ def main():
     encoded_data_path = f"{data_folder}/encoded"
 
     df = load_data(encoded_data_path)
-    best_model = train_model(df)
+    best_model = train_model(df, params=params)
     save_model(best_model, models_folder="models")
     logger.info("Model training done!")
 
