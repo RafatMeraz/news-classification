@@ -19,3 +19,10 @@ stages:
       - pipeline/feature_engineering.py
     outs:
       - data/encoded
+  model_training:
+    cmd: python -m pipeline.model_training
+    deps:
+      - data/encoded
+      - pipeline/model_training.py
+    outs:
+      - models/
