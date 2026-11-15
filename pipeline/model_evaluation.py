@@ -97,16 +97,20 @@ def evaluate_model(
 
     return metrics
 
+def load_run_id() -> str:
+    with open("models/run_id.txt", "r") as f:
+        run_id = f.read().strip()
+    logger.info(f"Loaded run_id: {run_id}")
+    return run_id
+
 
 def main():
     params = load_config_params("params.yaml", logger)
     data_folder = params["utils"]["data_folder"]
     test_path = f"{data_folder}/split/test.csv"
     model_path = params.get("model_evaluation", {}).get("model_path", "models/svc_model.pkl")
-    run_id = params.get("model_evaluation", {}).get("run_id")
 
-    if not run_id:
-        raise ValueError("run_id missing from params.yaml under model_evaluation.run_id")
+    run_id = load_run_id()
 
     df = load_data(test_path)
     model = load_model(model_path)

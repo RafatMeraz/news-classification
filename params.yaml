@@ -9,6 +9,5 @@ model_train:
   n_jobs: -1
 model_evaluation:
   model_path: models/svc_model.pkl
-  run_id: e8f5f7593fd84663a70a21eb58015e88
 utils:
   data_folder: data

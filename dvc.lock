@@ -62,8 +62,8 @@ stages:
       nfiles: 2
     - path: pipeline/model_training.py
       hash: md5
-      md5: 9878184c40875852991338d666b78876
-      size: 3867
+      md5: 83a97e0844fa7c280cfa1e5585250056
+      size: 4202
     params:
       params.yaml:
         model_train.cv: 2
@@ -72,9 +72,9 @@ stages:
     outs:
     - path: models/
       hash: md5
-      md5: b1d562e34976ac10ea1969ef971f1693.dir
-      size: 12655582
-      nfiles: 1
+      md5: edd1f8e9a0f6a41a526390377646cb0a.dir
+      size: 12655614
+      nfiles: 2
   data_splitting:
     cmd: python -m pipeline.data_splitting
     deps:
@@ -97,3 +97,23 @@ stages:
       md5: 5699d28dd90a4d5affbf68a25042f740.dir
       size: 17363438
       nfiles: 2
+  model_evaluation:
+    cmd: python -m pipeline.model_evaluation
+    deps:
+    - path: data/split
+      hash: md5
+      md5: 5699d28dd90a4d5affbf68a25042f740.dir
+      size: 17363438
+      nfiles: 2
+    - path: models/run_id.txt
+      hash: md5
+      md5: 2d72bdb5364863548db5f94b2480e235
+      size: 32
+    - path: models/svc_model.pkl
+      hash: md5
+      md5: 563ad143db3a2ccbd5154aa07792f9c6
+      size: 12655582
+    - path: pipeline/model_evaluation.py
+      hash: md5
+      md5: 0067f4264570988433f6fffe8f77afa7
+      size: 3607

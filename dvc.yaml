@@ -42,3 +42,10 @@ stages:
       - model_train.n_jobs
     outs:
       - models/
+  model_evaluation:
+    cmd: python -m pipeline.model_evaluation
+    deps:
+      - data/split
+      - models/run_id.txt
+      - models/svc_model.pkl
+      - pipeline/model_evaluation.py

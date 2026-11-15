@@ -1,13 +1,12 @@
 import os
 import pickle
+
 import pandas as pd
-import pathlib
 
 from pipeline.pipeline_utils import get_logger, load_config_params
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
-from sklearn.metrics import classification_report
 import mlflow
 
 logger = get_logger("model_training")
@@ -100,6 +99,14 @@ def train_model(df: pd.DataFrame, params: dict, target_col: str = "label") -> tu
 
     return best_model, run_id
 
+def save_run_id(run_id: str):
+    try:
+        with open("models/run_id.txt", "w") as f:
+            f.write(run_id)
+        logger.debug(f"Run ID saved: {run_id}")
+    except Exception as e:
+        logger.error(f"Error during save run_id: {e}")
+        raise
 
 def main():
     params = load_config_params("params.yaml", logger)
@@ -109,7 +116,10 @@ def main():
     df = load_data(train_path)
     best_model, run_id = train_model(df, params=params)
     save_model(best_model, models_folder="models")
-    logger.info(f"MLflow run_id: {run_id}")
+
+    save_run_id(run_id)
+
+    logger.info(f"MLflow run_id saved: {run_id}")
     logger.info("Model training done!")
 
 
