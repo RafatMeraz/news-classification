@@ -95,14 +95,28 @@ def process_all_data(folder_path: str, output_folder: str):
 
         folder = pathlib.Path(folder_path)
         files = [file for file in folder.iterdir() if file.is_file()]
-        logger.debug(f"Processed {len(files)} files")
+        logger.debug(f"Processing {len(files)} files")
+
+        # Step 1: transform all files first
+        dataframes = {}
         for file in files:
-            # transform dataframe
             df = load_data(str(file.resolve()))
             df = transform_dataframe(df)
-            df = vectorize_dataframe(df)
-            df.to_csv(os.path.join(output_folder, file.stem + '.csv'), index=False)
-            logger.debug(f"Processed {file.stem}")
+            dataframes[file.stem] = df
+
+        # Step 2: fit tfidf on all data combined so every file shares same vocabulary
+        all_text = pd.concat([df['transformed_text'] for df in dataframes.values()])
+        tfidf.fit(all_text)
+        logger.debug(f"TF-IDF fitted on {len(all_text)} total samples")
+
+        # Step 3: transform each file with shared vocabulary and save
+        for name, df in dataframes.items():
+            tfidf_matrix = tfidf.transform(df['transformed_text'])
+            feature_names = tfidf.get_feature_names_out()
+            tfidf_df = pd.DataFrame(tfidf_matrix.toarray(), columns=[f"tfidf_{n}" for n in feature_names])
+            df_combined = pd.concat([df.reset_index(drop=True), tfidf_df.reset_index(drop=True)], axis=1)
+            df_combined.to_csv(os.path.join(output_folder, name + '.csv'), index=False)
+            logger.debug(f"Processed {name}")
 
         logger.debug(f"Processed all {len(files)} files")
 
