@@ -55,15 +55,15 @@ stages:
   model_training:
     cmd: python -m pipeline.model_training
     deps:
-    - path: data/encoded
+    - path: data/split
       hash: md5
-      md5: b4be8485127220c15e39be8ec02594b8.dir
-      size: 17392406
-      nfiles: 10
+      md5: 5699d28dd90a4d5affbf68a25042f740.dir
+      size: 17363438
+      nfiles: 2
     - path: pipeline/model_training.py
       hash: md5
-      md5: bc00fc236dbc3ff040f8aa844c9e6b3f
-      size: 3716
+      md5: 9878184c40875852991338d666b78876
+      size: 3867
     params:
       params.yaml:
         model_train.cv: 2
@@ -75,3 +75,25 @@ stages:
       md5: b1d562e34976ac10ea1969ef971f1693.dir
       size: 12655582
       nfiles: 1
+  data_splitting:
+    cmd: python -m pipeline.data_splitting
+    deps:
+    - path: data/encoded
+      hash: md5
+      md5: b4be8485127220c15e39be8ec02594b8.dir
+      size: 17392406
+      nfiles: 10
+    - path: pipeline/data_splitting.py
+      hash: md5
+      md5: 14c3f2eb231fa8db4c80759f1e7604a2
+      size: 2578
+    params:
+      params.yaml:
+        split.random_state: 42
+        split.test_size: 0.2
+    outs:
+    - path: data/split
+      hash: md5
+      md5: 5699d28dd90a4d5affbf68a25042f740.dir
+      size: 17363438
+      nfiles: 2

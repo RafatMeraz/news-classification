@@ -21,10 +21,20 @@ stages:
       - pipeline/feature_engineering.py
     outs:
       - data/encoded
+  data_splitting:
+    cmd: python -m pipeline.data_splitting
+    deps:
+      - data/encoded
+      - pipeline/data_splitting.py
+    params:
+      - split.test_size
+      - split.random_state
+    outs:
+      - data/split
   model_training:
     cmd: python -m pipeline.model_training
     deps:
-      - data/encoded
+      - data/split
       - pipeline/model_training.py
     params:
       - model_train.cv
