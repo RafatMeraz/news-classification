@@ -3,6 +3,10 @@ stages:
   data_ingestion:
     cmd: python -m pipeline.data_ingestion
     deps:
+    - path: data/s3_manifest.json
+      hash: md5
+      md5: ca91b3836073fc219c865991174581c8
+      size: 1883
     - path: pipeline/data_ingestion.py
       hash: md5
       md5: 2d0d119fa5ae7624b0efd3609a4aac69
@@ -13,17 +17,17 @@ stages:
     outs:
     - path: data/raw
       hash: md5
-      md5: bd160971df9d1d9d02356d8e56420ab2.dir
-      size: 2467974
-      nfiles: 10
+      md5: 3ef3ba8f82e3508e95045e5801d9d8f1.dir
+      size: 2717494
+      nfiles: 11
   data_preprocessing:
     cmd: python -m pipeline.data_preprocessing
     deps:
     - path: data/raw
       hash: md5
-      md5: bd160971df9d1d9d02356d8e56420ab2.dir
-      size: 2467974
-      nfiles: 10
+      md5: 3ef3ba8f82e3508e95045e5801d9d8f1.dir
+      size: 2717494
+      nfiles: 11
     - path: pipeline/data_preprocessing.py
       hash: md5
       md5: 75978f2ee59c865241bd88a7394cc6df
@@ -31,17 +35,17 @@ stages:
     outs:
     - path: data/processed
       hash: md5
-      md5: c9467db5bd43c07ddfc15a9ed7e56d85.dir
-      size: 2506884
-      nfiles: 10
+      md5: bae5ff4073489862a06747a98b65a27e.dir
+      size: 2760295
+      nfiles: 11
   feature_engineering:
     cmd: python -m pipeline.feature_engineering
     deps:
     - path: data/processed
       hash: md5
-      md5: c9467db5bd43c07ddfc15a9ed7e56d85.dir
-      size: 2506884
-      nfiles: 10
+      md5: bae5ff4073489862a06747a98b65a27e.dir
+      size: 2760295
+      nfiles: 11
     - path: pipeline/feature_engineering.py
       hash: md5
       md5: c6629843708941c800e53efea5bff3ff
@@ -49,21 +53,21 @@ stages:
     outs:
     - path: data/encoded
       hash: md5
-      md5: b4be8485127220c15e39be8ec02594b8.dir
-      size: 17392406
-      nfiles: 10
+      md5: 91baa0dedafd6050f6ab4e58c1e4db26.dir
+      size: 19141557
+      nfiles: 11
   model_training:
     cmd: python -m pipeline.model_training
     deps:
     - path: data/split
       hash: md5
-      md5: 5699d28dd90a4d5affbf68a25042f740.dir
-      size: 17363438
+      md5: 4b73b1b15b9e4872423948d3eb02ecac.dir
+      size: 19109031
       nfiles: 2
     - path: pipeline/model_training.py
       hash: md5
-      md5: 83a97e0844fa7c280cfa1e5585250056
-      size: 4202
+      md5: 56c0998dcbdec9e306e53f2f962e855b
+      size: 4115
     params:
       params.yaml:
         model_train.cv: 2
@@ -72,17 +76,17 @@ stages:
     outs:
     - path: models/
       hash: md5
-      md5: edd1f8e9a0f6a41a526390377646cb0a.dir
-      size: 12655614
+      md5: 13740c7887a915e64e69642efa373ee4.dir
+      size: 13597671
       nfiles: 2
   data_splitting:
     cmd: python -m pipeline.data_splitting
     deps:
     - path: data/encoded
       hash: md5
-      md5: b4be8485127220c15e39be8ec02594b8.dir
-      size: 17392406
-      nfiles: 10
+      md5: 91baa0dedafd6050f6ab4e58c1e4db26.dir
+      size: 19141557
+      nfiles: 11
     - path: pipeline/data_splitting.py
       hash: md5
       md5: 14c3f2eb231fa8db4c80759f1e7604a2
@@ -94,26 +98,41 @@ stages:
     outs:
     - path: data/split
       hash: md5
-      md5: 5699d28dd90a4d5affbf68a25042f740.dir
-      size: 17363438
+      md5: 4b73b1b15b9e4872423948d3eb02ecac.dir
+      size: 19109031
       nfiles: 2
   model_evaluation:
     cmd: python -m pipeline.model_evaluation
     deps:
     - path: data/split
       hash: md5
-      md5: 5699d28dd90a4d5affbf68a25042f740.dir
-      size: 17363438
+      md5: 4b73b1b15b9e4872423948d3eb02ecac.dir
+      size: 19109031
       nfiles: 2
     - path: models/run_id.txt
       hash: md5
-      md5: 2d72bdb5364863548db5f94b2480e235
+      md5: e3aeb5ff3a44c26ae6e2597c29f926b5
       size: 32
     - path: models/svc_model.pkl
       hash: md5
-      md5: 563ad143db3a2ccbd5154aa07792f9c6
-      size: 12655582
+      md5: 3bd5a8b8a29256044faece646bf12e0a
+      size: 13597639
     - path: pipeline/model_evaluation.py
       hash: md5
       md5: 0067f4264570988433f6fffe8f77afa7
       size: 3607
+  s3_manifest:
+    cmd: python -m pipeline.s3_manifest
+    deps:
+    - path: pipeline/s3_manifest.py
+      hash: md5
+      md5: a7c1609c31150b8a762ac8901a21c9ca
+      size: 1386
+    params:
+      params.yaml:
+        data_ingestion.bucket_name: practice-ops-data-lake
+    outs:
+    - path: data/s3_manifest.json
+      hash: md5
+      md5: ca91b3836073fc219c865991174581c8
+      size: 1883

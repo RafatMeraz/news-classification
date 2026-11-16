@@ -1,8 +1,18 @@
 stages:
+  s3_manifest:
+    cmd: python -m pipeline.s3_manifest
+    always_changed: true
+    deps:
+      - pipeline/s3_manifest.py
+    params:
+      - data_ingestion.bucket_name
+    outs:
+      - data/s3_manifest.json
   data_ingestion:
     cmd: python -m pipeline.data_ingestion
     deps:
       - pipeline/data_ingestion.py
+      - data/s3_manifest.json
     outs:
       - data/raw
     params:
