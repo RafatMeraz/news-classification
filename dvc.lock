@@ -48,8 +48,8 @@ stages:
       nfiles: 11
     - path: pipeline/feature_engineering.py
       hash: md5
-      md5: c6629843708941c800e53efea5bff3ff
-      size: 4128
+      md5: d0f7b1326f711eb8b1d6f7a18e72aff7
+      size: 4362
     outs:
     - path: data/encoded
       hash: md5
@@ -70,13 +70,13 @@ stages:
       size: 4115
     params:
       params.yaml:
-        model_train.cv: 2
+        model_train.cv: 3
         model_train.n_jobs: -1
         model_train.scoring: accuracy
     outs:
     - path: models/
       hash: md5
-      md5: 13740c7887a915e64e69642efa373ee4.dir
+      md5: e6a10a1350b2ac412840597ac47637d0.dir
       size: 13597671
       nfiles: 2
   data_splitting:
@@ -111,7 +111,7 @@ stages:
       nfiles: 2
     - path: models/run_id.txt
       hash: md5
-      md5: e3aeb5ff3a44c26ae6e2597c29f926b5
+      md5: 7b5d0d408bf8d53edae99a4755995899
       size: 32
     - path: models/svc_model.pkl
       hash: md5

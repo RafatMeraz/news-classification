@@ -18,6 +18,7 @@ dependencies = [
     "scikit-learn>=1.9.1",
     "xgboost>=3.4.1",
     "boto3>=1.43.117",
+    "fastapi[standard]>=0.162.2",
 ]
 
 [project.scripts]

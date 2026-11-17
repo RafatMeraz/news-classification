@@ -4,7 +4,7 @@ split:
   test_size: 0.2
   random_state: 42
 model_train:
-  cv: 2
+  cv: 3
   scoring: accuracy
   n_jobs: -1
 model_evaluation:
