@@ -76,9 +76,9 @@ stages:
     outs:
     - path: models/
       hash: md5
-      md5: e6a10a1350b2ac412840597ac47637d0.dir
-      size: 13597671
-      nfiles: 2
+      md5: f37bcf6e01d65e6a51e64b43d879170f.dir
+      size: 13608928
+      nfiles: 3
   data_splitting:
     cmd: python -m pipeline.data_splitting
     deps:
