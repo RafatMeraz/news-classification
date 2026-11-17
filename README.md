@@ -2,24 +2,70 @@
 
 End-to-end ML pipeline for news article classification using DVC for reproducibility, MLflow for experiment tracking, and S3 for remote storage.
 
-## Pipeline Architecture
+## System Architecture
 
 ```mermaid
-flowchart TD
-    S3[(S3 Bucket\npractice-ops-data-lake)] -->|boto3| A
-    A[s3_manifest\nalways_changed: true] -->|s3_manifest.json| B
-    B[data_ingestion\nDownload raw CSVs] -->|data/raw| C
-    C[data_preprocessing\nRemove duplicates & nulls] -->|data/processed| D
-    D[feature_engineering\nTF-IDF vectorization\n300 features] -->|data/encoded| E
-    E[data_splitting\nStratified 80/20 split] -->|data/split| F
-    E -->|data/split| G
-    F[model_training\nSVC + GridSearchCV\nMLflow autolog] -->|svc_model.pkl\nrun_id.txt| G
-    G[model_evaluation\nAccuracy · F1 · per-class\nLog to MLflow]
+flowchart LR
+    subgraph EXT["☁️  External"]
+        S3[(🪣 S3\npractice-ops-data-lake)]
+        USER(["👤 Client"])
+    end
 
-    style A fill:#f9a825,color:#000
-    style S3 fill:#FF9900,color:#000
-    style F fill:#1565c0,color:#fff
-    style G fill:#2e7d32,color:#fff
+    subgraph PIPE["⚙️  DVC Pipeline"]
+        direction TB
+        SM["📋 s3_manifest\nalways_changed"]
+        DI["⬇️ data_ingestion"]
+        DP["🧹 data_preprocessing"]
+        FE["🔢 feature_engineering\nTF-IDF · 300 features"]
+        DS["✂️ data_splitting\n80 / 20 stratified"]
+        MT["🏋️ model_training\nSVC + GridSearchCV"]
+        ME["📊 model_evaluation"]
+
+        SM --> DI --> DP --> FE --> DS --> MT --> ME
+    end
+
+    subgraph STORE["🗄️  Storage"]
+        direction TB
+        RAW["data/raw/"]
+        ENC["data/encoded/"]
+        SPL["data/split/"]
+        MDL["models/\nsvc_model.pkl\ntfidf_vectorizer.pkl"]
+        MLB[(🧪 MLflow\nmlflow.db)]
+        DVC[(🔒 DVC Remote\ns3://dvc-remote-\nnews-classification)]
+    end
+
+    subgraph API["🚀  Inference API  · FastAPI"]
+        direction TB
+        MW["🪵 Logging Middleware"]
+        RT["POST /classifier/"]
+        SVC["Classifier Service\ntext transform → TF-IDF → SVC"]
+
+        MW --> RT --> SVC
+    end
+
+    S3 -->|"ETag manifest"| SM
+    DI -->|"CSVs"| RAW
+    FE -->|"encoded CSVs +\ntfidf_vectorizer.pkl"| ENC
+    DS --> SPL
+    MT -->|"svc_model.pkl"| MDL
+    MT -->|"metrics + run"| MLB
+    ME -->|"eval metrics"| MLB
+    MDL -->|"dvc push"| DVC
+
+    USER -->|"POST {text}"| MW
+    SVC -->|"load latest version"| MLB
+    SVC -->|"load vectorizer"| MDL
+    SVC -->|"category_id\ncategory_name"| USER
+
+    style EXT fill:#FFF3E0,stroke:#FB8C00,color:#000
+    style PIPE fill:#E3F2FD,stroke:#1565C0,color:#000
+    style STORE fill:#F3E5F5,stroke:#6A1B9A,color:#000
+    style API fill:#E8F5E9,stroke:#2E7D32,color:#000
+    style MLB fill:#CE93D8,stroke:#6A1B9A,color:#000
+    style DVC fill:#FF9800,stroke:#E65100,color:#000
+    style S3 fill:#FF9800,stroke:#E65100,color:#000
+    style USER fill:#42A5F5,stroke:#1565C0,color:#fff
+    style MDL fill:#AB47BC,stroke:#6A1B9A,color:#fff
 ```
 
 ### Stages
