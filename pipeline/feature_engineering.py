@@ -1,4 +1,5 @@
 import os
+import pickle
 
 import pandas as pd
 import pathlib
@@ -108,6 +109,11 @@ def process_all_data(folder_path: str, output_folder: str):
         all_text = pd.concat([df['transformed_text'] for df in dataframes.values()])
         tfidf.fit(all_text)
         logger.debug(f"TF-IDF fitted on {len(all_text)} total samples")
+
+        os.makedirs("models", exist_ok=True)
+        with open("models/tfidf_vectorizer.pkl", "wb") as f:
+            pickle.dump(tfidf, f)
+        logger.debug("TF-IDF vectorizer saved to models/tfidf_vectorizer.pkl")
 
         # Step 3: transform each file with shared vocabulary and save
         for name, df in dataframes.items():
