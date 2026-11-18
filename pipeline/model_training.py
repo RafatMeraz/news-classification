@@ -3,7 +3,7 @@ import pickle
 
 import pandas as pd
 
-from pipeline.pipeline_utils import get_logger, load_config_params
+from pipeline.pipeline_utils import get_logger, load_config_params, init_mlflow
 
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVC
@@ -11,7 +11,6 @@ import mlflow
 
 logger = get_logger("model_training")
 
-mlflow.set_experiment("news_classification")
 
 def load_data(data_path: str) -> pd.DataFrame:
     """
@@ -94,6 +93,11 @@ def train_model(df: pd.DataFrame, params: dict, target_col: str = "label") -> tu
         logger.info(f"Best CV accuracy: {grid_search.best_score_:.4f}")
 
         mlflow.sklearn.log_model(best_model, "svc_model")
+
+        with open("models/tfidf_vectorizer.pkl", "rb") as f:
+            tfidf = pickle.load(f)
+        mlflow.sklearn.log_model(tfidf, "tfidf_vectorizer")
+
         run_id = run.info.run_id
 
 
@@ -112,6 +116,8 @@ def main():
     params = load_config_params("params.yaml", logger)
     data_folder = params["utils"]["data_folder"]
     train_path = f"{data_folder}/split/train.csv"
+
+    init_mlflow(params, logger)
 
     df = load_data(train_path)
     best_model, run_id = train_model(df, params=params)

@@ -2,6 +2,7 @@ import pickle
 
 import pandas as pd
 import mlflow
+
 from sklearn.svm import SVC
 from sklearn.metrics import (
     classification_report,
@@ -10,11 +11,9 @@ from sklearn.metrics import (
     f1_score,
 )
 
-from pipeline.pipeline_utils import get_logger, load_config_params
+from pipeline.pipeline_utils import get_logger, load_config_params, init_mlflow
 
 logger = get_logger("model_evaluation")
-
-mlflow.set_experiment("news_classification")
 
 def load_data(data_path: str) -> pd.DataFrame:
     """
@@ -111,6 +110,8 @@ def main():
     model_path = params.get("model_evaluation", {}).get("model_path", "models/svc_model.pkl")
 
     run_id = load_run_id()
+
+    init_mlflow(params, logger)
 
     df = load_data(test_path)
     model = load_model(model_path)

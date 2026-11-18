@@ -27,7 +27,7 @@ _stop_words = set(stopwords.words("english"))
 _model = None
 _vectorizer = None
 
-mlflow.set_tracking_uri("sqlite:///mlflow.db")
+mlflow.set_tracking_uri("https://dagshub.com/RafatMeraz/news-classification.mlflow")
 client = mlflow.tracking.MlflowClient()
 
 

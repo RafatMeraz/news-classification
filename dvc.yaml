@@ -31,6 +31,7 @@ stages:
       - pipeline/feature_engineering.py
     outs:
       - data/encoded
+      - models/tfidf_vectorizer.pkl
   data_splitting:
     cmd: python -m pipeline.data_splitting
     deps:
@@ -51,7 +52,8 @@ stages:
       - model_train.scoring
       - model_train.n_jobs
     outs:
-      - models/
+      - models/svc_model.pkl
+      - models/run_id.txt
   model_evaluation:
     cmd: python -m pipeline.model_evaluation
     deps:

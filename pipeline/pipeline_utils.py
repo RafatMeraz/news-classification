@@ -2,6 +2,9 @@ import logging
 import os
 from logging import Logger
 
+import dagshub
+import mlflow
+
 import yaml
 
 log_dir = 'logs'
@@ -44,5 +47,15 @@ def load_config_params(path: str, logger: Logger) -> dict:
         raise
     except Exception as exc:
         logger.error(f"Unexpected error: {exc}")
+        raise
+
+def init_mlflow(params: dict, logger: Logger):
+    try:
+        dagshub.init(repo_owner=params['utils']['mlflow_repo_owner'],
+                 repo_name=params['utils']['mlflow_repo_name'],
+                 mlflow=True)
+        mlflow.set_experiment("news_classification")
+    except Exception as e:
+        logger.error(f"Error during init mlflow: {e}")
         raise
 

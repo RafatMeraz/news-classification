@@ -11,3 +11,5 @@ model_evaluation:
   model_path: models/svc_model.pkl
 utils:
   data_folder: data
+  mlflow_repo_owner: RafatMeraz
+  mlflow_repo_name: news-classification
