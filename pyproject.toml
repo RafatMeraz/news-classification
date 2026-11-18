@@ -19,6 +19,7 @@ dependencies = [
     "xgboost>=3.4.1",
     "boto3>=1.43.117",
     "fastapi[standard]>=0.162.2",
+    "streamlit>=1.67.0",
 ]
 
 [project.scripts]

@@ -260,6 +260,22 @@ Response:
 
 All requests and responses are logged to `logs/api.log`.
 
+## Streamlit UI
+
+A browser-based interface for classifying news articles without using the CLI.
+
+### Start
+
+```bash
+# Terminal 1 — API must be running first
+uv run uvicorn src.news_classification.main:app --reload
+
+# Terminal 2 — Streamlit UI
+uv run streamlit run front-end/app.py
+```
+
+Opens at `http://localhost:8501`. Paste a news article, click **Classify**, and see the predicted category with its label ID.
+
 ---
 
 ## Remote Storage
