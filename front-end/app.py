@@ -1,7 +1,9 @@
+import os
+
 import requests
 import streamlit as st
 
-API_URL = "http://localhost:8000/classifier/"
+API_URL = os.getenv("API_URL", "http://localhost:8000/classifier/")
 
 CATEGORY_ICONS = {
     "World": "🌍",

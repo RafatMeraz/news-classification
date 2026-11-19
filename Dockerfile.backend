@@ -1,0 +1,28 @@
+FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    unzip \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+COPY src/ ./src/
+COPY models/ ./models/
+
+RUN uv sync --frozen --no-dev
+
+RUN mkdir -p /root/nltk_data/corpora /root/nltk_data/tokenizers \
+    && curl -fsSL https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/corpora/stopwords.zip -o /tmp/stopwords.zip \
+    && unzip -q /tmp/stopwords.zip -d /root/nltk_data/corpora/ \
+    && curl -fsSL https://raw.githubusercontent.com/nltk/nltk_data/gh-pages/packages/tokenizers/punkt_tab.zip -o /tmp/punkt_tab.zip \
+    && unzip -q /tmp/punkt_tab.zip -d /root/nltk_data/tokenizers/ \
+    && rm /tmp/stopwords.zip /tmp/punkt_tab.zip
+
+EXPOSE 8000
+
+CMD ["uv", "run", "uvicorn", "src.news_classification.main:app", "--host", "0.0.0.0", "--port", "8000"]

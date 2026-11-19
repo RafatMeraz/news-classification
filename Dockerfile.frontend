@@ -1,0 +1,17 @@
+FROM ghcr.io/astral-sh/uv:python3.14-bookworm-slim
+
+WORKDIR /app
+
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-dev --no-install-project
+
+COPY src/ ./src/
+COPY front-end/ ./front-end/
+
+RUN uv sync --frozen --no-dev
+
+EXPOSE 8501
+
+ENV API_URL=http://backend:8000/classifier/
+
+CMD ["uv", "run", "streamlit", "run", "front-end/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
