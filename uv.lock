@@ -2615,6 +2615,20 @@ dependencies = [
     { name = "xgboost" },
 ]
 
+[package.optional-dependencies]
+backend = [
+    { name = "fastapi", extra = ["standard"] },
+    { name = "nltk" },
+    { name = "numpy" },
+    { name = "pandas" },
+    { name = "scikit-learn" },
+    { name = "xgboost" },
+]
+frontend = [
+    { name = "requests" },
+    { name = "streamlit" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "awscli", specifier = ">=1.46.3" },
@@ -2623,15 +2637,24 @@ requires-dist = [
     { name = "dvc", extras = ["s3"], specifier = ">=3.67.1" },
     { name = "dvclive", specifier = ">=3.49.1" },
     { name = "fastapi", extras = ["standard"], specifier = ">=0.162.2" },
+    { name = "fastapi", extras = ["standard"], marker = "extra == 'backend'", specifier = ">=0.162.2" },
     { name = "ipykernel", specifier = ">=7.4.0" },
     { name = "mlflow", specifier = ">=3.18.0" },
     { name = "nltk", specifier = ">=3.10.4" },
+    { name = "nltk", marker = "extra == 'backend'", specifier = ">=3.10.4" },
     { name = "numpy", specifier = ">=2.5.4" },
+    { name = "numpy", marker = "extra == 'backend'", specifier = ">=2.5.4" },
     { name = "pandas", specifier = ">=3.1.1" },
+    { name = "pandas", marker = "extra == 'backend'", specifier = ">=3.1.1" },
+    { name = "requests", marker = "extra == 'frontend'", specifier = ">=2.32.0" },
     { name = "scikit-learn", specifier = ">=1.9.1" },
+    { name = "scikit-learn", marker = "extra == 'backend'", specifier = ">=1.9.1" },
     { name = "streamlit", specifier = ">=1.67.0" },
+    { name = "streamlit", marker = "extra == 'frontend'", specifier = ">=1.67.0" },
     { name = "xgboost", specifier = ">=3.4.1" },
+    { name = "xgboost", marker = "extra == 'backend'", specifier = ">=3.4.1" },
 ]
+provides-extras = ["frontend", "backend"]
 
 [[package]]
 name = "nltk"

@@ -23,6 +23,20 @@ dependencies = [
     "dagshub>=0.7.3",
 ]
 
+[project.optional-dependencies]
+frontend = [
+    "streamlit>=1.67.0",
+    "requests>=2.32.0",
+]
+backend = [
+    "fastapi[standard]>=0.162.2",
+    "nltk>=3.10.4",
+    "numpy>=2.5.4",
+    "pandas>=3.1.1",
+    "scikit-learn>=1.9.1",
+    "xgboost>=3.4.1",
+]
+
 [project.scripts]
 news-classification = "news_classification:main"
 
