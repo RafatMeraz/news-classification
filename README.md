@@ -1,5 +1,9 @@
 # News Classification Pipeline
 
+## Live Demo
+
+http://3.125.200.189:8501
+
 End-to-end ML pipeline for news article classification using DVC for reproducibility, MLflow for experiment tracking, and S3 for remote storage.
 
 ## System Architecture

@@ -12,6 +12,6 @@ RUN uv sync --frozen --no-dev --no-default-groups --extra frontend
 
 EXPOSE 8501
 
-ENV API_URL=http://backend:8000/classifier/
+ENV API_URL=http://172.17.0.1:8080/classifier/
 
 CMD ["uv", "run", "streamlit", "run", "front-end/app.py", "--server.port=8501", "--server.address=0.0.0.0"]
